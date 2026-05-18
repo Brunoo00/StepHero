@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "6136728354",
+    "project_id": "stephero-126d9",
+    "storage_bucket": "stephero-126d9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6136728354:android:4754474d4cbf704d9cb37b",
+        "android_client_info": {
+          "package_name": "com.example.stephero"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-YmxonY-7d6kyLMhYfpom1bkzigUtWXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
