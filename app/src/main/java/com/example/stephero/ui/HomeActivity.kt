@@ -22,9 +22,6 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        carregarDadosUsuario()
-        carregarMissaoDoDia()
-
         binding.btnIniciarMissao.setOnClickListener {
             startActivity(Intent(this, CaminhadaActivity::class.java))
         }
@@ -39,7 +36,9 @@ class HomeActivity : AppCompatActivity() {
 
         binding.btnSair.setOnClickListener {
             auth.logout()
-            startActivity(Intent(this, LoginActivity::class.java))
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
             finish()
         }
     }
@@ -93,7 +92,9 @@ class HomeActivity : AppCompatActivity() {
         missaoDAO.salvarMissao(
             missao = novaMissao,
             onSucesso = { atualizarCardMissao(novaMissao) },
-            onErro = {}
+            onErro = {
+                Toast.makeText(this, "Erro ao criar missão", Toast.LENGTH_SHORT).show()
+            }
         )
     }
 

@@ -10,18 +10,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.stephero.auth.UsuarioAuth
+import com.example.stephero.dao.ConquistaDAO
 import com.example.stephero.dao.MissaoDAO
+import com.example.stephero.dao.UsuarioDAO
 import com.example.stephero.databinding.ActivityFotoMarcoBinding
 import com.example.stephero.helper.Base64Converter
 import com.example.stephero.helper.CameraHelper
+import com.example.stephero.helper.ConquistaHelper
 import com.example.stephero.helper.NotificacaoHelper
 
 class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
     private lateinit var binding: ActivityFotoMarcoBinding
     private lateinit var cameraHelper: CameraHelper
     private lateinit var notificacaoHelper: NotificacaoHelper
+    private lateinit var conquistaHelper: ConquistaHelper
     private val auth = UsuarioAuth()
     private val missaoDAO = MissaoDAO()
+    private val usuarioDAO = UsuarioDAO()
+    private val conquistaDAO = ConquistaDAO()
     private var fotoBitmap: Bitmap? = null
     private var missaoId = ""
     private var passosAtuais = 0
@@ -43,6 +49,7 @@ class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
 
         cameraHelper = CameraHelper(this, this)
         notificacaoHelper = NotificacaoHelper(this)
+        conquistaHelper = ConquistaHelper(conquistaDAO, missaoDAO)
 
         binding.btnTirarFoto.setOnClickListener {
             tirarFoto()
@@ -155,9 +162,7 @@ class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
                     )
                     missaoDAO.salvarMissao(
                         missao = missaoFinalizada,
-                        onSucesso = {
-                            atualizarXPEConquistas()
-                        },
+                        onSucesso = { atualizarXPEConquistas() },
                         onErro = {
                             Toast.makeText(this, "Erro ao concluir missão", Toast.LENGTH_SHORT).show()
                         }
@@ -180,9 +185,7 @@ class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
                     )
                     missaoDAO.salvarMissao(
                         missao = missaoFinalizada,
-                        onSucesso = {
-                            atualizarXPEConquistas()
-                        },
+                        onSucesso = { atualizarXPEConquistas() },
                         onErro = {
                             Toast.makeText(this, "Erro ao concluir missão", Toast.LENGTH_SHORT).show()
                         }
@@ -197,20 +200,34 @@ class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
         val email = auth.emailAtual()
         val xpGanho = 50
 
-        missaoDAO.buscarMissoesDoUsuario(
+        usuarioDAO.atualizarXP(
             email = email,
-            onSucesso = { missoes ->
-                val totalMissoes = missoes.count { it.concluida }
-                val intent = Intent(this, ConclusaoMissaoActivity::class.java).apply {
-                    putExtra("passos", passosAtuais)
-                    putExtra("xpGanho", xpGanho)
-                    putExtra("totalMissoes", totalMissoes)
-                }
-                notificacaoHelper.notificarMissaoConcluida(passosAtuais)
-                startActivity(intent)
-                finish()
+            xpGanho = xpGanho,
+            onSucesso = {
+                conquistaHelper.verificarConquistas(
+                    email = email,
+                    onConcluido = {
+                        missaoDAO.buscarMissoesDoUsuario(
+                            email = email,
+                            onSucesso = { missoes ->
+                                val totalMissoes = missoes.count { it.concluida }
+                                notificacaoHelper.notificarMissaoConcluida(passosAtuais)
+                                val intent = Intent(this, ConclusaoMissaoActivity::class.java).apply {
+                                    putExtra("passos", passosAtuais)
+                                    putExtra("xpGanho", xpGanho)
+                                    putExtra("totalMissoes", totalMissoes)
+                                }
+                                startActivity(intent)
+                                finish()
+                            },
+                            onErro = {}
+                        )
+                    }
+                )
             },
-            onErro = {}
+            onErro = {
+                Toast.makeText(this, "Erro ao atualizar XP", Toast.LENGTH_SHORT).show()
+            }
         )
     }
 }

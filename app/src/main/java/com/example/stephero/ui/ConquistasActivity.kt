@@ -36,12 +36,16 @@ class ConquistasActivity : AppCompatActivity() {
             email = email,
             onSucesso = { conquistas ->
                 if (conquistas.isEmpty()) {
-                    Toast.makeText(this, "Nenhuma conquista ainda. Complete missões!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "Nenhuma conquista ainda. Complete missões!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 val adapter = ConquistaAdapter(conquistas)
                 binding.recyclerConquistas.apply {
                     layoutManager = LinearLayoutManager(this@ConquistasActivity)
-                    adapter = this@ConquistasActivity.let { adapter }
+                    this.adapter = adapter
                 }
             },
             onErro = {
