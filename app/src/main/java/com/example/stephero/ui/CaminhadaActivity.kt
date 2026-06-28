@@ -28,6 +28,7 @@ class CaminhadaActivity : BaseActivity(),
     private var metaPassos = 6000
     private var missaoId = ""
     private var missaoConcluida = false
+    private var missaoCarregada = false
     private val REQUEST_NOTIFICACAO = 1002
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,10 +43,18 @@ class CaminhadaActivity : BaseActivity(),
         bussolaHelper = BussolaHelper(this, this)
         notificacaoHelper = NotificacaoHelper(this)
 
+        // Desabilita botões até a missão carregar
+        binding.btnRegistrarMarco.isEnabled = false
+        binding.btnConcluirMissao.isEnabled = false
+
         solicitarPermissaoNotificacao()
         carregarMissaoAtiva()
 
         binding.btnRegistrarMarco.setOnClickListener {
+            if (!missaoCarregada) {
+                Toast.makeText(this, "Aguarde carregar a missão...", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             val intent = Intent(this, FotoMarcoActivity::class.java)
             intent.putExtra("missaoId", missaoId)
             intent.putExtra("passos", passosAtuais)
@@ -53,6 +62,10 @@ class CaminhadaActivity : BaseActivity(),
         }
 
         binding.btnConcluirMissao.setOnClickListener {
+            if (!missaoCarregada) {
+                Toast.makeText(this, "Aguarde carregar a missão...", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             concluirMissao()
         }
     }
@@ -97,19 +110,28 @@ class CaminhadaActivity : BaseActivity(),
                     missaoId = missaoAtiva.id
                     metaPassos = missaoAtiva.metaPassos
                     passosAtuais = missaoAtiva.passos
+                    missaoCarregada = true
                     binding.txtMeta.text = "Meta: $metaPassos passos"
+                    binding.btnRegistrarMarco.isEnabled = true
+                    binding.btnConcluirMissao.isEnabled = true
                     atualizarUI()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Nenhuma missão ativa. Volte à tela inicial.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
                 }
             },
-            onErro = {}
+            onErro = {
+                Toast.makeText(this, "Erro ao carregar missão", Toast.LENGTH_SHORT).show()
+                finish()
+            }
         )
     }
 
     private fun concluirMissao() {
-        if (missaoId.isEmpty()) {
-            Toast.makeText(this, "Nenhuma missão ativa", Toast.LENGTH_SHORT).show()
-            return
-        }
         val intent = Intent(this, FotoMarcoActivity::class.java)
         intent.putExtra("missaoId", missaoId)
         intent.putExtra("passos", passosAtuais)

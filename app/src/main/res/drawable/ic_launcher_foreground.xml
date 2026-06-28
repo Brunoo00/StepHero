@@ -1,30 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <path android:pathData="M31,63.928c0,0 6.4,-11 12.1,-13.1c7.2,-2.6 26,-1.4 26,-1.4l38.1,38.1L107,108.928l-32,-1L31,63.928z">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:endX="85.84757"
-                android:endY="92.4963"
-                android:startX="42.9492"
-                android:startY="49.59793"
-                android:type="linear">
-                <item
-                    android:color="#44000000"
-                    android:offset="0.0" />
-                <item
-                    android:color="#00000000"
-                    android:offset="1.0" />
-            </gradient>
-        </aapt:attr>
-    </path>
+
+    <!--
+        Safe zone do Adaptive Icon: área visível é o círculo central de 72dp (de 18 a 90).
+        O foreground tem 108dp total, com 18dp de padding em cada lado para o safe zone.
+        O ícone foi desenhado centralizado em torno de (54, 54).
+    -->
+
+    <!-- Pin shape (corpo do location pin) -->
     <path
-        android:fillColor="#FFFFFF"
-        android:fillType="nonZero"
-        android:pathData="M65.3,45.828l3.8,-6.6c0.2,-0.4 0.1,-0.9 -0.3,-1.1c-0.4,-0.2 -0.9,-0.1 -1.1,0.3l-3.9,6.7c-6.3,-2.8 -13.4,-2.8 -19.7,0l-3.9,-6.7c-0.2,-0.4 -0.7,-0.5 -1.1,-0.3C38.8,38.328 38.7,38.828 38.9,39.228l3.8,6.6C36.2,49.428 31.7,56.028 31,63.928h46C76.3,56.028 71.8,49.428 65.3,45.828zM43.4,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2c-0.3,-0.7 -0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C45.3,56.528 44.5,57.328 43.4,57.328L43.4,57.328zM64.6,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2s-0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C66.5,56.528 65.6,57.328 64.6,57.328L64.6,57.328z"
-        android:strokeWidth="1"
-        android:strokeColor="#00000000" />
+        android:fillColor="#FF000000"
+        android:pathData="
+            M54,18
+            C38.5,18 26,30.5 26,46
+            C26,55 30,62.5 36.5,67.5
+            L54,90
+            L71.5,67.5
+            C78,62.5 82,55 82,46
+            C82,30.5 69.5,18 54,18
+            Z
+        " />
+
+    <!-- Buraco interno do pin (círculo vazado) -->
+    <path
+        android:fillColor="#BA88F4"
+        android:pathData="
+            M54,30
+            C44.6,30 37,37.6 37,47
+            C37,56.4 44.6,64 54,64
+            C63.4,64 71,56.4 71,47
+            C71,37.6 63.4,30 54,30
+            Z
+        " />
+
+    <!-- Caminho/estrada que sobe até a bandeira (S-curve) -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="
+            M54,90
+            C54,90 50,75 48,65
+            C46,58 50,54 54,50
+            C58,46 62,42 58,36
+            C56,33 54,32 54,32
+            L54,32
+            C54,32 56,33 57,36
+            C59,41 56,45 52,49
+            C48,53 44,57 46,65
+            C48,73 52,90 54,90
+            Z
+        " />
+
+    <!-- Poste da bandeira -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="
+            M53,34
+            L55,34
+            L55,46
+            L53,46
+            Z
+        " />
+
+    <!-- Bandeira -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="
+            M55,34
+            L63,37
+            L55,40
+            Z
+        " />
+
+    <!-- Base/bolinha do poste -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="
+            M54,46
+            C52.3,46 51,47.3 51,49
+            C51,50.7 52.3,52 54,52
+            C55.7,52 57,50.7 57,49
+            C57,47.3 55.7,46 54,46
+            Z
+        " />
+
 </vector>

@@ -1,8 +1,6 @@
 package com.example.stephero.dao
 
 import com.example.stephero.model.Missao
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -28,10 +26,10 @@ class MissaoDAO {
     ) {
         db.collection("missoes")
             .whereEqualTo("usuarioEmail", email)
-            .orderBy("data", Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { documentos ->
                 val missoes = documentos.mapNotNull { it.toObject(Missao::class.java) }
+                    .sortedByDescending { it.data }
                 onSucesso(missoes)
             }
             .addOnFailureListener { erro -> onErro(erro) }

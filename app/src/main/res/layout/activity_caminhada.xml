@@ -41,6 +41,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
+        android:id="@+id/txtPassosLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="passos"
@@ -57,7 +58,7 @@
         android:layout_marginTop="24dp"
         android:max="100"
         android:progress="0"
-        app:layout_constraintTop_toBottomOf="@id/txtPassos"
+        app:layout_constraintTop_toBottomOf="@id/txtPassosLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -77,6 +78,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="📸 Registrar Marco"
+        android:textSize="16sp"
+        android:textAllCaps="false"
         android:layout_marginTop="24dp"
         style="@style/Widget.Material3.Button.OutlinedButton"
         app:layout_constraintTop_toBottomOf="@id/txtMeta"
@@ -88,6 +91,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Concluir Missão"
+        android:textSize="16sp"
+        android:textAllCaps="false"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/btnRegistrarMarco"
         app:layout_constraintStart_toStartOf="parent"
