@@ -3,13 +3,12 @@ package com.example.stephero.ui
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.example.stephero.auth.UsuarioAuth
 import com.example.stephero.dao.UsuarioDAO
 import com.example.stephero.databinding.ActivityCadastroBinding
 import com.example.stephero.model.Usuario
 
-class CadastroActivity : AppCompatActivity() {
+class CadastroActivity : BaseActivity() {
     private lateinit var binding: ActivityCadastroBinding
     private val auth = UsuarioAuth()
     private val usuarioDAO = UsuarioDAO()

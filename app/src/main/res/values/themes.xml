@@ -1,9 +1,13 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.StepHero" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources>
+    <style name="Theme.StepHero" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#9B72CF</item>
+        <item name="colorPrimaryVariant">#6A4C93</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSurface">#16213E</item>
+        <item name="colorOnSurface">#E0E0E0</item>
+        <item name="colorOnSurfaceVariant">#AAAAAA</item>
+        <item name="android:windowBackground">#1A1A2E</item>
+        <item name="android:statusBarColor">#1A1A2E</item>
+        <item name="android:navigationBarColor">#1A1A2E</item>
     </style>
-
-    <style name="Theme.StepHero" parent="Base.Theme.StepHero" />
 </resources>

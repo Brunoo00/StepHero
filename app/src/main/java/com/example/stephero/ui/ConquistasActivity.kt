@@ -2,14 +2,13 @@ package com.example.stephero.ui
 
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stephero.adapter.ConquistaAdapter
 import com.example.stephero.auth.UsuarioAuth
 import com.example.stephero.dao.ConquistaDAO
 import com.example.stephero.databinding.ActivityConquistasBinding
 
-class ConquistasActivity : AppCompatActivity() {
+class ConquistasActivity : BaseActivity() {
     private lateinit var binding: ActivityConquistasBinding
     private val auth = UsuarioAuth()
     private val conquistaDAO = ConquistaDAO()

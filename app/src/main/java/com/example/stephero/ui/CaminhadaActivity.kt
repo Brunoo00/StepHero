@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.stephero.auth.UsuarioAuth
@@ -15,7 +14,7 @@ import com.example.stephero.helper.BussolaHelper
 import com.example.stephero.helper.NotificacaoHelper
 import com.example.stephero.helper.PedometerHelper
 
-class CaminhadaActivity : AppCompatActivity(),
+class CaminhadaActivity : BaseActivity(),
     PedometerHelper.Callback,
     BussolaHelper.Callback {
 
@@ -111,7 +110,6 @@ class CaminhadaActivity : AppCompatActivity(),
             Toast.makeText(this, "Nenhuma missão ativa", Toast.LENGTH_SHORT).show()
             return
         }
-
         val intent = Intent(this, FotoMarcoActivity::class.java)
         intent.putExtra("missaoId", missaoId)
         intent.putExtra("passos", passosAtuais)

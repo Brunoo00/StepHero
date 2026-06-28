@@ -3,15 +3,15 @@ package com.example.stephero.ui
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.example.stephero.auth.UsuarioAuth
 import com.example.stephero.dao.MissaoDAO
 import com.example.stephero.dao.UsuarioDAO
 import com.example.stephero.databinding.ActivityHomeBinding
+import com.example.stephero.helper.ThemeHelper
 import com.example.stephero.model.Missao
 import com.google.firebase.Timestamp
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : BaseActivity() {
     private lateinit var binding: ActivityHomeBinding
     private val auth = UsuarioAuth()
     private val usuarioDAO = UsuarioDAO()
@@ -21,6 +21,12 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (!auth.estaLogado()) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+            return
+        }
 
         binding.btnIniciarMissao.setOnClickListener {
             startActivity(Intent(this, CaminhadaActivity::class.java))
@@ -45,16 +51,22 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        carregarDadosUsuario()
-        carregarMissaoDoDia()
+        if (auth.estaLogado()) {
+            carregarDadosUsuario()
+            carregarMissaoDoDia()
+        }
     }
 
     private fun carregarDadosUsuario() {
         val email = auth.emailAtual()
+        if (email.isEmpty()) return
+
         usuarioDAO.buscarUsuario(
             email = email,
             onSucesso = { usuario ->
-                binding.txtSaudacao.text = "Olá, ${usuario.username}!"
+                val saudacao = ThemeHelper.getSaudacao()
+                val emoji = ThemeHelper.getEmoji()
+                binding.txtSaudacao.text = "$saudacao, ${usuario.username}! $emoji"
                 binding.txtNivel.text = "Nível ${usuario.nivel}"
                 binding.txtXP.text = "${usuario.xp} XP"
                 val progressoNivel = calcularProgressoNivel(usuario.xp, usuario.nivel)
@@ -66,6 +78,8 @@ class HomeActivity : AppCompatActivity() {
 
     private fun carregarMissaoDoDia() {
         val email = auth.emailAtual()
+        if (email.isEmpty()) return
+
         missaoDAO.buscarMissoesDoUsuario(
             email = email,
             onSucesso = { missoes ->

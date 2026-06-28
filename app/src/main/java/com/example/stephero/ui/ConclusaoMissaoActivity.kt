@@ -2,12 +2,11 @@ package com.example.stephero.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.example.stephero.auth.UsuarioAuth
 import com.example.stephero.dao.UsuarioDAO
 import com.example.stephero.databinding.ActivityConclusaoMissaoBinding
 
-class ConclusaoMissaoActivity : AppCompatActivity() {
+class ConclusaoMissaoActivity : BaseActivity() {
     private lateinit var binding: ActivityConclusaoMissaoBinding
     private val auth = UsuarioAuth()
     private val usuarioDAO = UsuarioDAO()

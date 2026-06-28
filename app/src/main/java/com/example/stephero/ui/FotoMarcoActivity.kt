@@ -5,8 +5,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.stephero.auth.UsuarioAuth
@@ -19,7 +19,7 @@ import com.example.stephero.helper.CameraHelper
 import com.example.stephero.helper.ConquistaHelper
 import com.example.stephero.helper.NotificacaoHelper
 
-class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
+class FotoMarcoActivity : BaseActivity(), CameraHelper.Callback {
     private lateinit var binding: ActivityFotoMarcoBinding
     private lateinit var cameraHelper: CameraHelper
     private lateinit var notificacaoHelper: NotificacaoHelper
@@ -56,6 +56,7 @@ class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
         }
 
         binding.btnSalvarFoto.setOnClickListener {
+            Log.d("FotoMarco", "Botão salvar clicado, bitmap: $fotoBitmap")
             salvarFoto()
         }
 
@@ -88,8 +89,10 @@ class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
     }
 
     override fun onFotoRecebida(bitmap: Bitmap) {
+        Log.d("FotoMarco", "Foto recebida! Bitmap: ${bitmap.width}x${bitmap.height}")
         fotoBitmap = bitmap
         binding.imgFoto.setImageBitmap(bitmap)
+        Toast.makeText(this, "Foto capturada!", Toast.LENGTH_SHORT).show()
     }
 
     override fun onRequestPermissionsResult(
@@ -109,11 +112,21 @@ class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
 
     private fun salvarFoto() {
         if (fotoBitmap == null) {
-            Toast.makeText(this, "Tire uma foto primeiro", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Tire uma foto primeiro!", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val fotoString = Base64Converter.bitmapToString(fotoBitmap!!)
+        binding.btnSalvarFoto.isEnabled = false
+        binding.btnSalvarFoto.text = "Salvando..."
+
+        val fotoString = try {
+            Base64Converter.bitmapToString(fotoBitmap!!)
+        } catch (e: Exception) {
+            binding.btnSalvarFoto.isEnabled = true
+            binding.btnSalvarFoto.text = "Salvar e Continuar"
+            Toast.makeText(this, "Erro ao processar foto", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         if (ehConclusao) {
             concluirMissaoComFoto(fotoString)
@@ -123,6 +136,14 @@ class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
     }
 
     private fun salvarFotoMarco(fotoString: String) {
+        if (missaoId.isEmpty()) {
+            Toast.makeText(this, "Missão não encontrada", Toast.LENGTH_SHORT).show()
+            binding.btnSalvarFoto.isEnabled = true
+            binding.btnSalvarFoto.text = "Salvar e Continuar"
+            finish()
+            return
+        }
+
         missaoDAO.buscarMissoesDoUsuario(
             email = auth.emailAtual(),
             onSucesso = { missoes ->
@@ -140,16 +161,33 @@ class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
                             finish()
                         },
                         onErro = {
+                            binding.btnSalvarFoto.isEnabled = true
+                            binding.btnSalvarFoto.text = "Salvar e Continuar"
                             Toast.makeText(this, "Erro ao salvar marco", Toast.LENGTH_SHORT).show()
                         }
                     )
+                } else {
+                    // Missão não encontrada — finaliza mesmo assim
+                    binding.btnSalvarFoto.isEnabled = true
+                    binding.btnSalvarFoto.text = "Salvar e Continuar"
+                    Toast.makeText(this, "Missão não encontrada", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
             },
-            onErro = {}
+            onErro = {
+                binding.btnSalvarFoto.isEnabled = true
+                binding.btnSalvarFoto.text = "Salvar e Continuar"
+                Toast.makeText(this, "Erro ao buscar missão", Toast.LENGTH_SHORT).show()
+            }
         )
     }
 
     private fun concluirMissaoComFoto(fotoString: String) {
+        if (missaoId.isEmpty()) {
+            irParaConclusao()
+            return
+        }
+
         missaoDAO.buscarMissoesDoUsuario(
             email = auth.emailAtual(),
             onSucesso = { missoes ->
@@ -164,16 +202,29 @@ class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
                         missao = missaoFinalizada,
                         onSucesso = { atualizarXPEConquistas() },
                         onErro = {
+                            binding.btnSalvarFoto.isEnabled = true
+                            binding.btnSalvarFoto.text = "Salvar e Continuar"
                             Toast.makeText(this, "Erro ao concluir missão", Toast.LENGTH_SHORT).show()
                         }
                     )
+                } else {
+                    irParaConclusao()
                 }
             },
-            onErro = {}
+            onErro = {
+                binding.btnSalvarFoto.isEnabled = true
+                binding.btnSalvarFoto.text = "Salvar e Continuar"
+                Toast.makeText(this, "Erro ao buscar missão", Toast.LENGTH_SHORT).show()
+            }
         )
     }
 
     private fun concluirMissaoSemFoto() {
+        if (missaoId.isEmpty()) {
+            irParaConclusao()
+            return
+        }
+
         missaoDAO.buscarMissoesDoUsuario(
             email = auth.emailAtual(),
             onSucesso = { missoes ->
@@ -190,9 +241,13 @@ class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
                             Toast.makeText(this, "Erro ao concluir missão", Toast.LENGTH_SHORT).show()
                         }
                     )
+                } else {
+                    irParaConclusao()
                 }
             },
-            onErro = {}
+            onErro = {
+                Toast.makeText(this, "Erro ao buscar missão", Toast.LENGTH_SHORT).show()
+            }
         )
     }
 
@@ -212,22 +267,28 @@ class FotoMarcoActivity : AppCompatActivity(), CameraHelper.Callback {
                             onSucesso = { missoes ->
                                 val totalMissoes = missoes.count { it.concluida }
                                 notificacaoHelper.notificarMissaoConcluida(passosAtuais)
-                                val intent = Intent(this, ConclusaoMissaoActivity::class.java).apply {
-                                    putExtra("passos", passosAtuais)
-                                    putExtra("xpGanho", xpGanho)
-                                    putExtra("totalMissoes", totalMissoes)
-                                }
-                                startActivity(intent)
-                                finish()
+                                irParaConclusao(xpGanho, totalMissoes)
                             },
-                            onErro = {}
+                            onErro = {
+                                irParaConclusao(xpGanho, 0)
+                            }
                         )
                     }
                 )
             },
             onErro = {
-                Toast.makeText(this, "Erro ao atualizar XP", Toast.LENGTH_SHORT).show()
+                irParaConclusao(xpGanho, 0)
             }
         )
+    }
+
+    private fun irParaConclusao(xpGanho: Int = 50, totalMissoes: Int = 0) {
+        val intent = Intent(this, ConclusaoMissaoActivity::class.java).apply {
+            putExtra("passos", passosAtuais)
+            putExtra("xpGanho", xpGanho)
+            putExtra("totalMissoes", totalMissoes)
+        }
+        startActivity(intent)
+        finish()
     }
 }

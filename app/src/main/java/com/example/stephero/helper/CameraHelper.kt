@@ -20,18 +20,19 @@ class CameraHelper(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val bitmap: Bitmap?
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                bitmap = result.data?.extras?.getParcelable(
-                    "data",
-                    Bitmap::class.java
-                )
-            } else {
-                @Suppress("DEPRECATION")
-                bitmap = result.data?.extras?.get("data") as? Bitmap
+            val bitmap: Bitmap? = try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    result.data?.extras?.getParcelable("data", Bitmap::class.java)
+                } else {
+                    @Suppress("DEPRECATION")
+                    result.data?.extras?.get("data") as? Bitmap
+                }
+            } catch (e: Exception) {
+                null
             }
-            bitmap?.let {
-                val copia = it.copy(Bitmap.Config.ARGB_8888, true)
+
+            if (bitmap != null) {
+                val copia = bitmap.copy(Bitmap.Config.ARGB_8888, true)
                 callback.onFotoRecebida(copia)
             }
         }

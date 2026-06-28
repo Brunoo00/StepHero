@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Fixos -->
+    <color name="fundo_escuro">#1A1A2E</color>
+    <color name="fundo_card">#16213E</color>
+    <color name="texto_claro">#E0E0E0</color>
+    <color name="branco">#FFFFFF</color>
+
+    <!-- Dia -->
+    <color name="dia_primaria">#F4A261</color>
+    <color name="dia_variante">#E76F51</color>
+
+    <!-- Tarde -->
+    <color name="tarde_primaria">#E9C46A</color>
+    <color name="tarde_variante">#F4A261</color>
+
+    <!-- Noite -->
+    <color name="noite_primaria">#9B72CF</color>
+    <color name="noite_variante">#6A4C93</color>
+
+    <!-- Default -->
+    <color name="cor_primaria">#9B72CF</color>
+    <color name="cor_primaria_variante">#6A4C93</color>
 </resources>

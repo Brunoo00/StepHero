@@ -16,10 +16,13 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (auth.estaLogado()) {
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
-        }
+        try {
+            if (auth.estaLogado()) {
+                startActivity(Intent(this, HomeActivity::class.java))
+                finish()
+                return
+            }
+        } catch (e: Exception) { }
 
         binding.btnEntrar.setOnClickListener {
             fazerLogin()
@@ -31,13 +34,15 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun fazerLogin() {
-        val email = binding.edtEmail.text.toString()
+        val email = binding.edtEmail.text.toString().trim()
         val senha = binding.edtSenha.text.toString()
 
         if (email.isEmpty() || senha.isEmpty()) {
             Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
             return
         }
+
+        binding.btnEntrar.isEnabled = false
 
         auth.login(
             email = email,
@@ -47,6 +52,7 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             },
             onErro = {
+                binding.btnEntrar.isEnabled = true
                 Toast.makeText(this, "E-mail ou senha inválidos", Toast.LENGTH_SHORT).show()
             }
         )

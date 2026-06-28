@@ -1,13 +1,12 @@
 package com.example.stephero.ui
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.example.stephero.auth.UsuarioAuth
 import com.example.stephero.dao.MissaoDAO
 import com.example.stephero.dao.UsuarioDAO
 import com.example.stephero.databinding.ActivityPerfilBinding
 
-class PerfilActivity : AppCompatActivity() {
+class PerfilActivity : BaseActivity() {
     private lateinit var binding: ActivityPerfilBinding
     private val auth = UsuarioAuth()
     private val usuarioDAO = UsuarioDAO()
