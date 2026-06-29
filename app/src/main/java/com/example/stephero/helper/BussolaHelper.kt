@@ -39,14 +39,14 @@ class BussolaHelper(
     override fun onSensorChanged(event: SensorEvent) {
         when (event.sensor.type) {
             Sensor.TYPE_ACCELEROMETER -> gravity.apply {
-                this[0] = event.values[0]
-                this[1] = event.values[1]
-                this[2] = event.values[2]
+                this[0] = event.values[0] // eixo X
+                this[1] = event.values[1] // eixo Y
+                this[2] = event.values[2] // eixo Z
             }
             Sensor.TYPE_MAGNETIC_FIELD -> geomagnetic.apply {
-                this[0] = event.values[0]
-                this[1] = event.values[1]
-                this[2] = event.values[2]
+                this[0] = event.values[0] // campo magnético X
+                this[1] = event.values[1] // campo magnético Y
+                this[2] = event.values[2] // campo magnético Z
             }
         }
 
