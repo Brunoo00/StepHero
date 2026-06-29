@@ -38,8 +38,9 @@ class CameraHelper(
         }
     }
 
-    fun tirarFoto() {
+    fun tirarFoto() { // é a action padrão do Android para abrir a câmera.
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        launcher.launch(intent)
+        // dispara a Activity de câmera quando ela retornar, o lambda registrado no construtor é executado automaticamente.
+        launcher.launch(intent) 
     }
 }
