@@ -19,7 +19,7 @@ class CameraHelper(
     private val launcher = activity.registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == Activity.RESULT_OK) { //verifica se o usuario tirou foto e nao cancelou
             val bitmap: Bitmap? = try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     result.data?.extras?.getParcelable("data", Bitmap::class.java)
