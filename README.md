@@ -62,8 +62,9 @@ O projeto segue boas práticas de desenvolvimento Android com separação em pac
 
 ## Demonstração
 
-[Vídeo demonstrativo]() — em breve
+[Vídeo demonstrativo](https://www.youtube.com/shorts/xsX1xX89E7U)
 
 ---
 
 ## Como Instalar
+git clone https://github.com/Brunoo00/StepHero
